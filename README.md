@@ -19,7 +19,7 @@ This work explores computer vision problems such as semantic segmentation and ob
 
 ## Code Base
 
-The proposed work has been implemented in Tensorflow 1.0 and is available here: [Working on some updates](https://github.com/venkyiyer/)
+The proposed work has been implemented in Tensorflow 1.0 and is available here: [Working on some updates](https://github.com/venkyiyer/Master-Thesis-Combined_Architecture)
 
 ## Chapter Overview
 
