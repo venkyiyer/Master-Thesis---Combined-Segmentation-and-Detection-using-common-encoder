@@ -1,0 +1,593 @@
+\rhead{\textit{Experiments and Results}}
+\lhead{\thepage}
+
+\chapter{Experiments and Results}
+
+In this chapter, experiments and results of standalone architectures and combined architectures are discussed. Section \ref{pascalvoc} is about experiments using PASCAL-VOC 2012 dataset followed by section \ref{kitti} about experiments using \ac{kitti} dataset.
+
+\subsection{Evaluation on PASCAL-VOC 2012} \label{pascalvoc}
+
+Section \ref{combinearchi} shows how combining the architectures (\textit{Branch1} and \textit{Branch2}) is possible using a common encoder. Before evaluating the combined architecture, it is necessary to check the performance evaluation of each branch. This technique is useful to know the flaw or benefit of using the combined architecture in comparison to using stand-alone architectures.
+
+\par
+
+\paragraph{Hyperparameters}
+
+Hyperparameters are kept constant throughout all experiments to get an ideal comparison. 
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Hyperparameter} & \textbf{Value}                 \\ \hline
+Learning rate  & 0.0001; 0.001; 0.0001 \\ \hline
+Intervals      & 18,300; 36,600        \\ \hline
+Batch size     & 8                     \\ \hline
+Weight decay   & 0.000001              \\ \hline
+Epochs         & 200                   \\ \hline
+\end{tabular}
+\end{table}
+
+\paragraph{Branch1 - Standalone - Object detection}
+
+\textit{Branch1} - standalone only involves training of \textit{Branch1} while the \textit{Branch2} is freezed. During this phase, only the localization and confidence loss is calculated. Images are resized to $300 \times 300$, and random augmentation is applied on the fly. 
+
+\par
+
+This setup gives an mAP score of \textbf{46.9\%}
+\par
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \linewidth]{results/Onlydet.png}
+    \caption{Loss vs epochs - Branch1}
+    \label{onlyobjcurve}
+\end{figure}
+
+
+Figure \ref{onlyobjcurve} shows the loss vs epochs curve for standalone object detection. It is seen that after the $120^{th}$ epoch, the loss increases neither decrease, which means the network has saturated.  
+
+Some sample predictions are shown in table \ref{Onlyobjdet}
+
+\clearpage
+
+\begin{table}[h!]
+\caption{Predicted images from Branch1 - standalone - object detection}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{12pt}
+\begin{tabular}{*{3}{m{0.35\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Onlydetection/Bus.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Onlydetection/cat.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Onlydetection/cow.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Onlydetection/horse.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Onlydetection/chair.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Onlydetection/pottedplant.png}\end{center}\\
+\hline
+\end{tabular}
+\label{Onlyobjdet}
+\end{table}
+
+
+\paragraph{Branch2 - Standalone - semantic segmentation}
+
+\textit{Branch2} - standalone only involves the training of \textit{Branch2} keeping the \textit{Branch1} freezed. During this phase only the pixel-wise cross entropy is calculated. The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Images are resized to $300 \times 300$ and random augmentation is applied on the fly.
+
+\par
+
+This setup gives a mean IoU score of \textbf{62.01\%} and mean pixel accuracy score of \textbf{85.4\%}.
+
+\clearpage
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \linewidth]{results/Fcn32-Onlyseg.png}
+    \caption{Loss vs epochs - Branch2}
+    \label{onlysegcurve}
+\end{figure}
+
+Figure \ref{onlysegcurve} shows the loss vs epochs curve for semantic segmentation. The loss value at the end of $200^{th}$ epoch is \textbf{1.04}. Also, it is seen that after $65^{th}$ epoch we reach the minima of function where the value of loss is \textbf{0.54}.
+
+Some sample predictions are shown in table 
+\ref{Onlyseg}
+
+\begin{table}[h!]
+\caption{Predicted images from Branch2- standalone - semantic segmentation
+(Extreme left - RGB image, Bottom - ground truth, Extreme right - prediction)}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{10pt}
+\begin{tabular}{*{3}{m{0.20\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/2011_002040.jpg}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/20_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/20_pred.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/2007_007432.jpg}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/140_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/140_pred.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/2009_002164.jpg}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/300_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{Onlysegmentation/300_pred.png}\end{center}\\
+\hline
+\end{tabular}
+\label{Onlyseg}
+\end{table}
+
+\clearpage
+
+\paragraph{Combining Branch1 and Branch2 (FCN32)}
+
+This phase involves the training of both the branches such that one branch gives the object detection result and the other branch give segmentation map. The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Localization, confidence and pixel-wise cross-entropy are calculated in this phase. Images are resized to $300 \times 300$, and random augmentation is applied on the fly.
+
+\par
+
+Training both the branches parallelly gives mean AP score of \textbf{46.6\%} for object detection and mean IoU score of \textbf{56.85\%}, mean pixel accuracy score of \textbf{83.3\%} for semantic segmentation.
+
+\par
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \linewidth]{results/combined.png}
+    \caption{Loss vs epochs}
+    \label{combined}
+\end{figure}
+
+Figure \ref{combined} shows the loss vs epochs curve for the combined training. As per the curve, the loss is increasing gradually at a high rate after $80^{th}$ epoch. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width = \linewidth]{results/combined-training.png}
+    \caption{Loss vs epochs (Training)}
+    \label{combined_training_fig}
+\end{figure}
+
+Figure \ref{combined_training_fig} shows the training loss vs epochs curve. By comparing both the above graphs, we can deduce that the network has overfitted on training data. 
+
+Hence, scores at the $80^{th}$ are reported as network starts to overfit after that. The mean AP score for object detection is \textbf{35.65\%} while the mean IoU score and mean pixel-accuracy score are \textbf{46.92\%} and \textbf{80.1\%} for semantic segmentation. 
+
+% By combining the architecture, the mean AP score drops down by \textbf{11.25\%} for object detection and mean IoU score and mean pixel-accuracy score drops down by \textbf{15.09\%} and \textbf{4.84\%} in case of semantic segmentation. 
+
+Some sample predictions are shown in table \ref{combinedpred}
+\ref{combinedpred}
+
+\newpage
+
+\begin{table}[h!]
+\caption{Predicted images from combined architecture - object detection + semantic segmentation}
+% (Extreme left - RGB image, Bottom - ground truth, Extreme right - prediction)}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{10pt}
+\begin{tabular}{*{3}{m{0.20\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/person.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/pottedplant.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{Combined/sofa.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/2009_003071.jpg}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/140_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{Combined/140_pred.png}\end{center}\\
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/2007_003022.jpg}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/460_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{Combined/460_pred.png}\end{center}\\
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/2010_005429.jpg}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{Combined/360_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{Combined/360_pred.png}\end{center}\\
+\hline
+\end{tabular}
+\label{combinedpred}
+\end{table}
+
+\paragraph{Combining Branch1 and Branch2 using Lambda in loss function - (FCN32)}
+
+Section \ref{combineloss} shows how the combined loss is calculated for semantic segmentation and object detection. This experiment shows how using $\lambda$ in the combined loss function will work with the model. 
+\begin{equation}
+    Combined loss = \lambda (loss of Branch1) + \lambda (loss of Branch2)
+\end{equation}
+\par
+The combined architecture can be seen as a multi-task setting where object detection and semantic segmentation are being solved with the help of common parameters and very few task-specific parameters. This idea of using a combined loss function then can be seen as a generalization strategy, where one of the above-mentioned tasks put pressure on the common parameters such that the other task can be generalized better. Of course, in an ideal scenario where the two tasks are highly related, adding the loss functions with $\lambda = 1$ would suffice. However, by adding a small value of $\lambda$ for one of the tasks will add as a regularizer (generalizes the parameters by putting some constraints) for the other task.
+\par
+The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Images are resized to $300 \times 300$, and random augmentation is applied on the fly.
+
+\begin{itemize}
+\item Case1: $\lambda_{1}=1$ and $\lambda_{2}$ = 0.01
+    
+\begin{equation}
+    L = \lambda_{1} (-\Sigma_{classes}\;y_{true}\;log(y_{pred})) + \lambda_{2}(\frac{1}{N} (L_{conf} (x,c) + \alpha L_{loc} (x,l,g))) 
+\end{equation}
+As per the loss function above, the object detection part will act as a regularizer for the semantic segmentation part. 
+
+\par
+
+This setup of $\lambda$ value gives a mean IoU score of \textbf{62.52\%} and mean pixel-accuracy score of \textbf{86.3\%} for semantic segmentation. The mAP score for object detection drops down to only \textbf{3\%}.
+
+\par
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{results/lambdaseg.png}
+    \caption{Semantic segmentation loss vs epochs}
+    \label{labdaseg}
+\end{figure}
+
+Figure \ref{labdaseg} shows the loss vs epochs curve. It is seen that loss is increasing after the $70^{th}$ epoch.
+
+
+\begin{figure}
+\centering
+    \includegraphics[width=\linewidth]{results/traininglambdaseg.png}
+    \caption{Semantic segmentation loss vs epochs (Training)}
+    \label{labdasegtraining}
+\end{figure}
+
+Figure \ref{labdasegtraining} shows the training loss vs epochs curve. By comparing both the above graphs, we can deduce that the network has overfitted on training data. 
+
+\newpage
+
+Hence, scores at $70^{th}$ epoch are reported as network starts to overfit after that. The mean
+AP score for object detection is \textbf{0.37\%} while the mean IoU score and mean pixel-accuracy for semantic segmentation are \textbf{48.65\%} and \textbf{79.82\%}. 
+
+
+\item Case2: $\lambda_{1}=0.01$ and $\lambda_{2}$ = 1
+
+\begin{equation}
+    L = \lambda_{1} (-\Sigma_{classes}\;y_{true}\;log(y_{pred})) + \lambda_{2}(\frac{1}{N} (L_{conf} (x,c) + \alpha L_{loc} (x,l,g))) 
+\end{equation}
+
+As per the loss function above, the semantic segmentation part will act as a regularizer for the object detection part. This setup of $\lambda$ value gives a mean AP score of \textbf{45.02\%} while mean IoU and mean pixel-accuracy scores for semantic segmentation are \textbf{32.48\%} and \textbf{73.7\%}.
+
+\begin{figure}[h!]
+\begin{multicols}{2}
+    \includegraphics[width=\linewidth]{results/lambdaod-confidence.png}\par \includegraphics[width=\linewidth]{results/lambdaod-localization.png}\par
+    \end{multicols}
+\caption{Confidence and localization loss vs epochs}
+\label{conf_loc}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{results/lambdaod-total.png}
+    \caption{Total loss vs epochs}
+    \label{totallosslambda}
+\end{figure}
+
+\end{itemize}
+
+Figures \ref{conf_loc} and \ref{totallosslambda} are confidence, localization and total loss curves. It shows that the total loss gradually increases at a high rate after the $76^{th}$ epoch. The reasons for increase in total loss can be because of the confidence loss increasing and also might be because the network is overfitting the training data. 
+
+Hence, scores from the $77^{th}$ epoch are reported. The mean AP score for object detection is \textbf{36.46\%} while the mean IoU and mean pixel-accuracy scores are \textbf{32.48\%} and \textbf{73.7\%}.
+
+\paragraph{Combining Branch1 and Branch2 - (FCN32)}
+
+This experiment is carried out by resizing the images to $512\times512$ and passing it to the network. The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Augmentation of images are done on the fly.
+
+Training both the branches gives mean AP score of \textbf{47.66\%} for object detection while mean IoU and mean pixel-accuracy scores of \textbf{61.5\%} and \textbf{47.6\%} for semantic segmentation. 
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{results/512.png}
+    \caption{Total loss vs epochs}
+    \label{512feature}
+\end{figure}
+
+Figure \ref{512feature} shows the loss vs epochs curve. It is seen that loss is increasing after the $77^{th}$ epoch.
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width=\linewidth]{results/512train.png}
+    \caption{Total loss vs epochs (Training)}
+    \label{512featuretrain}
+\end{figure}
+
+Figure \ref{512featuretrain} shows the training loss vs epoch. By comparing both the above graphs, we can deduce that the network has overfitted on training data. 
+\par
+Hence, scores at $77^{th}$ epoch are reported. The mean AP is \textbf{38.39\%} for object detection while mean IoU score and mean pixel accuracy scores are \textbf{49.96\%} and \textbf{80.3\%}.
+
+
+
+\paragraph{Combining Branch1 and Branch2 - (FCN8)}
+
+This experiment is carried out by resizing the images to $300\times300$ and passing it to the network. Augmentation of images are done on the fly. The predicted segmented map is achieved by upsampling and using skip connections as mentioned in section \ref{SS}
+
+Training both the branches parallelly gives mean AP score of \textbf{0.6\%}for object detection while mean IoU and mean pixel-accuracy of \textbf{32.48\%} and  \textbf{73.7\%}for semantic segmentation.
+
+\clearpage
+
+
+\newpage
+
+\paragraph{Summary of results for PASCAL-VOC}
+
+\begin{table}[h!]
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Standalone}} \\ \hline
+ &
+  \textbf{mAP} &
+  \textbf{mIoU} &
+  \textbf{mPA} \\ \hline
+Branch1 (object detection) (300 x 300) &
+  46.9\% &
+  - &
+  - \\ \hline
+Branch2 (semantic segmentation) (300 x 300) &
+  - &
+  62.01\% &
+  85.4\% \\ \hline
+\multicolumn{4}{|c|}{\textbf{Combined}} \\ \hline
+ &
+  \textbf{mAP} &
+  \textbf{mIoU} &
+  \textbf{mPA} \\ \hline
+Combined (FCN32) (300 x 300) &
+  35.65\% &
+  46.92\% &
+  80.1\% \\ \hline
+\begin{tabular}[c]{@{}c@{}}Combined [(($\lambda$=1)segmentation loss)+\\ (($\lambda$=0.01)detection loss)] - (FCN32)) (300 x 300)\end{tabular} &
+  0.37\% &
+  48.65\% &
+  79.82\% \\ \hline
+\begin{tabular}[c]{@{}c@{}}Combined [(($\lambda$=0.01)segmentation loss)+\\ (($\lambda$=1)detection loss (FCN32))] (300 x 300)\end{tabular} &
+  36.46\% &
+  32.48\% &
+  73.7\% \\ \hline
+Combined (FCN8) (300 x 300) &
+   0.6\%&
+   32.48\%&
+   73.7\%\\ \hline
+Combined (FCN32) (512 x 512) &
+  \textbf{38.39\%} &
+  \textbf{49.96\%} &
+  \textbf{80.3\%} \\ \hline
+\end{tabular}
+\end{table}
+
+\newpage
+\subsection{Evaluation on \ac{kitti}} \label{kitti}
+
+\paragraph{Hyperparameters}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Hyperparameter} & \textbf{Value}                 \\ \hline
+Learning rate  & 0.0001\\ \hline
+Batch size     & 4                     \\ \hline
+Weight decay   & 0.000001              \\ \hline
+Epochs         & 50                   \\ \hline
+\end{tabular}
+\end{table}
+
+\paragraph{Branch1 - Standalone - Object detection}
+
+\textit{Branch1} - standalone only involves training of \textit{Branch1} while the \textit{Branch2} is freezed. Only the localization and confidence loss is calculated in this phase. Images are resized to $300\times300$ and random augmentation is applied on the fly.
+
+\par
+
+This setup gives an mAP score of \textbf{35.95\%}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{results/k-od.png}
+    \caption{Loss vs epoch}
+    \label{k-od}
+\end{figure}
+
+Figure \ref{k-od} shows the loss vs epochs curve. 
+
+\par
+
+Some sample predictions are shown in table \ref{k-Onlyobjdet}
+
+\clearpage
+
+\begin{table}[h!]
+\caption{Predicted images from Branch1 - standalone - object detection}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{12pt}
+\begin{tabular}{*{3}{m{0.35\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{k-Onlydetection/1.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{k-Onlydetection/2.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{k-Onlydetection/3.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{k-Onlydetection/4.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{k-Onlydetection/5.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{k-Onlydetection/6.png}\end{center}\\
+\hline
+\end{tabular}
+\label{k-Onlyobjdet}
+\end{table}
+
+\paragraph{Branch2 - Standalone - Semantic segmentation}
+
+\textit{Branch2} - standalone only involves the training of \textit{Branch2} keeping the \textit{Branch1} freezed. During this phase only the pixel-wise cross entropy is calculated. The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Images are resized to $300\times300$ and random augmentation is applied on the fly.
+
+\par
+
+This setup gives a mean IoU score of \textbf{60.83\%} and mean pixel accuracy score of \textbf{95.6\%}. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{results/k-seg.png}
+    \caption{Loss vs epoch}
+    \label{k-seg}
+\end{figure}
+
+Figure \ref{k-seg} shows the loss vs epochs curve. 
+
+Some sample predictions are shown in table \ref{k-Onlyseg}.
+
+
+\begin{table}[h!]
+\caption{Predicted images from Branch2- standalone - semantic segmentation
+(Extreme left - RGB image, Bottom - ground truth, Extreme right - prediction)}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{10pt}
+\begin{tabular}{*{3}{m{0.20\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/000019_10.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/15_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/15_pred.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/000136_10.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/25_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/25_pred.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/000083_10.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/35_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{k-Onlyseg/35_gt.png}\end{center}\\
+\hline
+\end{tabular}
+\label{k-Onlyseg}
+\end{table}
+
+\clearpage
+
+\newpage
+
+\paragraph{Combining Branch1 and Branch2}
+
+This phase involves the training of both the branches such that one branch gives the object detection result and the other branch give segmentation map. The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Localization, confidence and pixel-wise cross-entropy are calculated in this phase. Images are resized to $300\times300$, and random augmentation is applied on the fly.
+
+\par
+
+Training both the branches parallelly gives mean AP score of \textbf{35.8\%}for object detection and mean IoU score of \textbf{60.9\%}, mean pixel accuracy score of \textbf{95.8\%} for semantic segmentation. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width= \linewidth]{results/k-combined.png}
+    \caption{Loss vs epoch}
+    \label{k-combined}
+\end{figure}
+
+Figure \ref{k-combined} shows the loss vs epochs curve. 
+
+Some sample predictions are shown in table \ref{k-combinedpred}
+
+\begin{table}[h!]
+\caption{Predicted images from combined architecture - object detection + semantic segmentation}
+% (Extreme left - RGB image, Bottom - ground truth, Extreme right - prediction)}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{10pt}
+\begin{tabular}{*{3}{m{0.20\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/1.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/2.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/3.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/000083_10.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/20_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/20_pred.png}\end{center}\\
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/000019_10.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/25_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/25_pred.png}\end{center}\\
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/000180_10.png}\end{center} &
+\begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/0_gt.png}\end{center} & \begin{center}\includegraphics[width=3cm, height=3cm]{k-combined/0_pred.png}\end{center}\\
+\hline
+\end{tabular}
+\label{k-combinedpred}
+\end{table}
+
+
+
+
+\paragraph{Combining Branch1 and Branch2 using Lambda in loss function - (FCN32)}
+
+\par The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Images are resized to $300 \times 300$, and random augmentation is applied on the fly.
+
+\begin{itemize}
+    \item Case1: $\lambda_{1}=1$ and $\lambda_{2}$ = 0.01
+    
+\begin{equation}
+    L = \lambda_{1} (-\Sigma_{classes}\;y_{true}\;log(y_{pred})) + \lambda_{2}(\frac{1}{N} (L_{conf} (x,c) + \alpha L_{loc} (x,l,g))) 
+\end{equation}
+
+Here, the object detection part will act as a regularizer for the semantic segmentation part. This setup of $\lambda$ value gives a mean IoU score of \textbf{61.56\%} and mean pixel-accuracy score of \textbf{95.7\%} for semantic segmentation. The mAP score for object detection drops down to only \textbf{0.6\%}.
+
+Figure \ref{k-seg-lambda} shows the loss vs epoch curve
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{results/k-seg-labda.png}
+    \caption{Segmentation loss vs epochs}
+    \label{k-seg-lambda}
+\end{figure}
+
+\newpage
+\item Case2: $\lambda_{1}=0.01$ and $\lambda_{2}$ = 1
+
+\begin{equation}
+    L = \lambda_{1} (-\Sigma_{classes}\;y_{true}\;log(y_{pred})) + \lambda_{2}(\frac{1}{N} (L_{conf} (x,c) + \alpha L_{loc} (x,l,g))) 
+\end{equation}
+
+As per the loss function above, the semantic segmentation part will act as a regularizer for the object detection part.
+
+\begin{figure}[h!]
+\begin{multicols}{2}
+    \includegraphics[width=\linewidth]{results/k-confidence.png}\par \includegraphics[width=\linewidth]{results/k-localization.png}\par
+    \end{multicols}
+\caption{Confidence and localization loss vs epochs}
+\label{k_conf_loc}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width= \linewidth]{results/k-val-lambda.png}
+    \caption{Total loss vs epochs}
+    \label{k_totallosslambda}
+\end{figure}
+
+Figures \ref{k_conf_loc} and \ref{k_totallosslambda} are confidence, localization and total loss curves. 
+\par
+The mean AP score for object detection is \textbf{35.21\%} while the mean IoU and mean pixel-accuracy scores are \textbf{46.91\%} and \textbf{93.8\%}.
+
+\end{itemize}
+
+
+\paragraph{Combining Branch1 and Branch2 - (FCN32)}
+
+This experiment is carried out by resizing the images to $512\times512$ and passing it to the network. Augmentation of images are done on the fly. The predicted segmentation map is achieved by upsampling the last feature map of the \ac{vgg}16 encoder by 32 times (\ac{fcn}32). Augmentation of images are done on the fly.
+
+Training both the branches gives mean AP score of \textbf{42.4\%} for object detection while mean IoU and mean pixel-accuracy scores are \textbf{62.60\%} and \textbf{95.7\%} for semantic segmentation. 
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width= \linewidth]{results/k-512.png}
+    \caption{Total loss vs epochs}
+    \label{k_fcn512}
+\end{figure}
+
+Figure \ref{k_fcn512} shows the loss vs epoch curve. 
+
+
+\paragraph{Combining Branch1 and Branch2 - (FCN8)}
+
+This experiment is carried out by resizing the images to $300\times300$ and passing it to the network. Augmentation of images are done on the fly. The predicted segmented map is achieved by upsampling and using skip connections as mentioned in section \ref{SS}
+
+Training both the branches parallelly gives mean AP score of \textbf{0.6\%}for object detection while mean IoU and mean pixel-accuracy of \textbf{50.6\%} and  \textbf{93.2\%}for semantic segmentation.
+
+\begin{figure}[h!]
+\centering
+    \includegraphics[width= \linewidth]{results/k-fcn8.png}
+    \caption{Total loss vs epochs}
+    \label{k_fcn8}
+\end{figure}
+
+Figure \ref{k_fcn8} shows the loss vs epoch curve. 
+
+\clearpage
+
+\paragraph{Summary of results for KITTI}
+
+\begin{table}[h!]
+\begin{tabular}{|c|c|c|c|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Standalone}}                                     \\ \hline
+                                & \textbf{mAP} & \textbf{mIoU} & \textbf{mPA} \\ \hline
+Branch1 (object detection) (300 x 300)      & 35.95\%      & -             & -            \\ \hline
+Branch2 (semantic segmentation) (300 x 300) & -            & 60.83\%       & 95.6\%       \\ \hline
+\multicolumn{4}{|c|}{\textbf{Combined}}                                       \\ \hline
+                                & \textbf{mAP} & \textbf{mIoU} & \textbf{mPA} \\ \hline
+Combined (FCN32) (300 x 300)    & 35.8\%       & 60.9\%        & 95.8\%       \\ \hline
+\begin{tabular}[c]{@{}c@{}}Combined (($\lambda$=1)segmentation loss)+\\ ($\lambda$=0.01)detection loss (FCN32) (300 x 300)\end{tabular} & 0.6\%   & 61.56\% & 95.7\% \\ \hline
+\begin{tabular}[c]{@{}c@{}}Combined (($\lambda$=0.01)segmentation loss)+\\ ($\lambda$=1)detection loss (FCN32) (300 x 300)\end{tabular} & 35.21\% & 46.91\% & 93.8\% \\ \hline
+Combined (FCN8) (300 x 300)     & 0.6\%        & 50.6\%        & 93.2\%       \\ \hline
+Combined(FCN32) (512x512)       & \textbf{42.4\%}    & \textbf{62.60\%}     & \textbf{95.7\%}    \\ \hline
+\end{tabular}
+\end{table}
+
+\clearpage
+\afterpage{\null\newpage}
+

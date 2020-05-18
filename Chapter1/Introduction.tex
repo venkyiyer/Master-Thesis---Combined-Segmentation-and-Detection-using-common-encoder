@@ -1,0 +1,79 @@
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textit{Introduction}}
+\lhead{\thepage}
+% \rfoot{Page \thepage}
+
+
+\chapter{Introduction}
+
+Progress in the field of \ac{ai} is one of the hot topics of the ongoing boom in teaching sytems and robots to see the world. Systems and robots use this vision to perform complex tasks in both the physical and virtual worlds. It is found that the investment and work in \ac{ai} are accelerating at an unprecedented rate in areas like search and optimization, computer vision, machine learning, probabilistic reasoning, neural networks. 
+
+
+\par
+
+The report \cite{aii} shows that research about cognition related performance - a game playing \ac{ai} outsmart a human opponent is leading the research category in the number of papers published. While not far behind is, the research in computer vision, which is pushing this progress in autonomous vehicles, including power, augmented reality and object detection.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Introduction_images/report.png}
+    \caption{Graph showing the statistics of papers published in recent years}
+    \label{stats}
+\end{figure}
+
+Also, in terms of performance, \ac{ai} continues to escalate to new heights in the field of computer vision. By measuring benchmark performance for the widely-used image training database \cite{ImageNet}, the \cite{aii} shows that the time taken by a model to classify the images to achieve good accuracy has come down to few minutes from an hour.   
+
+% time to make a model classify the pictures at \ac{sota} accuracy has come down to 4 minutes from an hour, which shows 16x speed in training of the model. 
+
+
+\par
+
+This revolution that is happening in terms of research and hardware backing such research is pushing the current \ac{sota} technology towards a point where such innovations will become part of everyday human lives. Thus, the increasing investment of monetary funds and workforce in the research in this field only seeks to accelerate human progress in the direction of bringing \ac{ai} into our everyday lives, exclusively in the field of computer vision which is seen to be revolutionizing rapidly.  
+
+
+\subsection{Motivation}
+
+Computer vision in the field of \ac{ai} is a booming industry applied to many of our day-to-day products. The potential gains are high when a computer in certain areas replaces humans. This is because a computer can see many things at once, in great detail and can analyze it parallelly. The accuracy of analysis done by computer can bring incredible time savings and quality improvements and also free up resources that require human communication.
+
+\par
+
+Some applications of computer vision in practice today are: 
+\begin{itemize}
+    \item Autonomous vehicles
+    \item Translation app
+    \item Facial recognition
+    \item Healthcare
+    \item Real-time sports tracking
+    \item  Agriculture
+    \item Manufacturing
+\end{itemize}
+
+Out of all the above-mentioned applications, we shift our focus towards autonomous vehicles. According to \cite{WHO}, more than 1.25 million people die each year because of traffic accidents. Nearly 50\% of road casualties are pedestrians, cyclists and motorcyclists. The larger part majority of these accidents are due to human error. In such cases, computer vision techniques within \ac{dl} like object detection and semantic segmentation can be used to prevent such accidents. Using such deep networks, the vehicles learn to analyze situations like detecting pedestrians, give way for cyclists, mapping the road and act accordingly. 
+\par
+Figure \ref{Waymo} shows how an autonomous vehicle detects vehicles and maps the path.   
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=15cm]{Introduction_images/waymo.png}
+    \caption{Autonomous vehicle \cite{Waymo}}
+    \label{Waymo}
+\end{figure}
+
+Also, semantic segmentation is important in the field of biomedicine, where relevant regions in the body can be classified, making tests easier and simpler. Whereas, object detection is important in the fields of urban planning, ship tracking, and monitoring the crops. 
+
+\subsection{Tasks}
+The above section shows the importance of computer vision techniques such as semantic segmentation and object detection in autonomous vehicles. The objective of this work is to solve both semantic segmentation and object detection using a single common pipeline.
+
+\par
+
+Basic overview of tasks are: 
+
+\begin{itemize}
+    \item Combine a dataset such that it consists segmentation ground truth (explained in section \ref{Semantic Segmentation}) as well as object bounding box coordinates (explained in section \ref{Object Detection}).
+    \item Combine object detection and semantic segmentation architectures such that it gives bounding box and segmentation map predictions. 
+    \item Evaluate the model. 
+\end{itemize}
+
+\afterpage{\null\newpage}
+

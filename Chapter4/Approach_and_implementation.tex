@@ -1,0 +1,348 @@
+
+\rhead{\textit{Approach and Implementation}}
+\lhead{\thepage}
+
+\chapter{Approach and Implementation}
+
+This chapter covers the approach, methodology and design of architecture used in this work. Section \ref{Dataset} gives an explanation about datasets used for training and evaluating the model. Sections \ref{SS} and \ref{OD} explain different architectures using feature extractor as encoders in semantic segmentation and object detection. Section \ref{Combination} shows how we can combine different architectures through a common feature extractor/ encoder that can solve both the problems mentioned above parallelly. 
+
+\subsection{Dataset} \label{Dataset}
+
+Datasets play a vital role in the field of \ac{dl}. A useful dataset gives a significant boost to an algorithm's performance. Preparing a sizeable amount of good and standard datasets require time and knowledge to gather relevant information. However, there are several publicly available standard datasets in the field of image processing.  
+
+\par
+
+Out of all the publicly available datasets, we opt for PASCAL-VOC 2012 \cite{pascal-voc-2012} and KITTI Vision Benchmark \cite{Geiger2012CVPR} datasets to train and evaluate our model. The following sections consist of a brief description of both the datasets mentioned above.
+
+\subsubsection{PASCAL-VOC 2012} \label{PascalVOC}
+
+PASCAL VOC is a benchmark challenge in computer vision tasks, which provides the computer vision and machine learning association with a standard dataset of images, annotations, and evaluation procedures \cite{pascal-voc-2012}. Since it's inception in the year 2005, the dataset consisted of only 1578 images (4 classes: bicycle, car, motorbike, people) for the task of classification and detection; while in the year 2012, the number of images went up more than 10,000 images consisting of 20 classes. The 2012 challenge includes dataset consisting of images that are used for detection, classification and segmentation, which is categorized as:   
+
+\begin{itemize}
+
+    \item Detection and classification - 17, 125 images
+    \item Segmentation - 2,913 images 
+
+\end{itemize}
+
+\subsubsection{KITTI Vision Benchmark} \label{Kitti}
+
+\ac{kitti} dataset is a novel challenging real-world computer vision benchmark. This dataset was captured by driving autonomous cars developed by \cite{AnnieWay}. These cars were driven in rural areas and on highways around the mid-size city of Karlsruhe, Germany. Two high-resolution colour and grayscale video cameras attached to these cars are used to capture images for the dataset. Each image in the dataset consists of up to 15 cars and 30 pedestrians. \ac{kitti} consists of images that can be used for detection and segmentation, categorized as:
+
+\begin{itemize}
+    \item Detection - 7,481 images
+    \item Segmentation - 200 images
+\end{itemize}
+
+Some sample images of both the datasets are shown in the table \ref{seg_imgs_pascalvoc} and \ref{seg_imgs_Kitti}. 
+
+
+\begin{table}[h!]
+\caption{Sample images from the PASCAL-VOC 2012 dataset}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{12pt}
+\begin{tabular}{*{3}{m{0.35\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_000068.jpg}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_000068.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_000464.jpg}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_000464.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_001630.jpg}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_001630.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_002597.jpg}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Dataset_images/2007_002597.png}\end{center}\\
+\hline
+\end{tabular}
+\label{seg_imgs_pascalvoc}
+\end{table}
+\clearpage
+
+
+\begin{table}[h!]
+\caption{Sample images from the \ac{kitti} dataset}
+\centering
+\def\arraystretch{0.25}% 
+\setlength\tabcolsep{12pt}
+\begin{tabular}{*{3}{m{0.35\linewidth}}}
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/3_10.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/000003_10.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/7_10.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/000007_10.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/11_10.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/000011_10.png}\end{center}\\
+\hline
+\begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/16_10.png}\end{center} & \begin{center}\includegraphics[width=4cm, height=4cm]{Kitti/000016_10.png}\end{center}\\
+\hline
+\end{tabular}
+\label{seg_imgs_Kitti}
+\end{table}
+\clearpage
+
+This work is based on creating a common pipeline to perform semantic segmentation and object detection. This poses a challenge to create a dataset that contains an equal number of ground truth for semantic segmentation and object bounding box coordinates for object detection. In case of PASCAL-VOC 2012 dataset, the bounding box coordinates for each object in the image are already available in XML format, but it's not the same in the case of \ac{kitti} dataset. Hence, a possible solution to this is using \cite{LabelImg} to create bounding box coordinates for each object manually and save it in XML format. 
+
+\par
+
+Figure \ref{LabelImg} shows how bounding box coordinates can be created using LabelImg tool. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=12cm]{Kitti/LabelImg.png}
+    \caption{LabelImg tool}
+    \label{LabelImg}
+\end{figure}
+
+
+Training-validation split for both the datasets are: 
+
+\begin{itemize}
+    \item PASCAL-VOC 2012 - Training: 2310 Validation: 583 
+    \item \ac{kitti}  - Training: 160 Validation: 40
+\end{itemize}
+
+\subsection{Data augmentation} \label{augmentations}
+
+Data augmentation is a strategy that enables the diversity in data available for training \ac{dl} models. This strategy proves to be important because it helps reducing overfitting and improves the generalization of the model. In order to achieve this, a series of augmentations on the data can be applied. Augmentation of data can either be performed offline or on the fly such that it can cover most of the variances and scenarios expected to appear in the real world. 
+\par
+Some of the augmentations applied randomly to the data in our work are:
+\begin{itemize}
+    \item Brightness transform: $-30$ to $30$
+    \item Contrast transform : $0.5$ to $1.5$
+    \item Hue transform: $-18$ to $18$
+    \item Saturation transform: $0.5$ to $1.5$
+    \item Horizontal flip
+\end{itemize}
+
+
+\subsection{Feature extractor/ Encoder} \label{Encoder}
+
+Section \ref{feature_extractor} mentions how \ac{cnn} is used to extract features from images. As this approach is based on using a common encoder to do semantic segmentation and object detection, choosing an effective image feature extractor is of utmost importance. \cite{simonyan2014very} neural network from VGG group, University of Oxford is used for extracting image features in this work. This architecture is an improvement over \cite{krizhevsky2012imagenet} where large-sized filters are replaced with multiple small-sized filters stacked one after the other and increasing the depth of the network. The arrangement of the layers are consistent and built using $3\times3$ convolutional layers with stride 1 to increase the depth, and the volume is reduced by using max-pooling of $2\times2$ filter with stride 2. In the end, 2 fully connected layers, each with 4,096 nodes, followed by a softmax function for the output. 
+
+
+% **From the input layer to the last max pooling layer (labeled by 7 x 7 x 512) is regarded as the feature extraction part of the model, while the rest of the network is regarded as the classification part of the model.**
+
+\par
+Some pros and cons using \ac{vgg}16 are stated below:
+\par
+Pros:
+\begin{itemize}
+    \item Multiple, stacked,  smaller sized filters increases the depth of network hence, enabling it to learn more complex features at a lower cost. 
+    \item Very simple and consistent architecture.
+\end{itemize}
+\par
+Cons:
+\begin{itemize}
+    \item Consists of too many weight parameters making it very memory consuming.
+    \item Too many parameters makes the training process slow.
+\end{itemize}
+
+\par
+Figure \ref{VGG} shows the architecture of \ac{vgg}16. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width =\linewidth]{Architectures/VGG.png}
+    \caption{VGG16}
+    \label{VGG}
+\end{figure}
+
+\subsection{Semantic segmentation} \label{SS}
+
+Section \ref{Semantic Segmentation} gives an understanding as to how semantic segmentation is performed using an encoder-decoder architecture. \ac{fcn} \cite{long2015fully} is used for semantic segmentation in this work. \ac{fcn} has revolutionized the area of semantic segmentation as it can process the whole image in a single forward pass and hence, exploits contextual information in images efficiently and better way. \ac{fcn} is an encoder-decoder architecture, where, \ac{vgg}16 is used as a pre-trained encoder (feature extractor). This architecture consists of only convolutional and pooling layers, giving them the ability to produce arbitrary sized predictions. Due to this reason, the fully connected layers (Fc6 and Fc7) of \ac{vgg}16 are converted to $1\times1$ convolution. The extracted features are upsampled using transposed convolutions using bilinear interpolation features. Skip connection is introduced after each convolution block to merge features from various resolution levels that helps in combining context information with spatial information. Figure \ref{FCN_Architecture} shows the architecture diagram of \ac{fcn}. 
+ 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Architectures/FCN_Archi.jpg}
+    \caption{Architecture of \ac{fcn}-32, \ac{fcn}-16 and \ac{fcn}-8}
+    \label{FCN_Architecture}
+\end{figure}
+
+There are 3 variants in \ac{fcn}. These variants have common downsampling path but different respective upsampling paths; they are:
+
+\begin{itemize}
+
+\item \ac{fcn}-32: Segmentation map is directly created from conv7 layer by using a transposed convolution layer with stride 32.
+    
+\item \ac{fcn}-16: The prediction from conv7 is upsampled using the transposed convolution of stride 2 (2x upsampling) and added to the pool4 feature map. This summed feature map is upsampled again using the transposed convolution of stride 16 to produce segmentation map. 
+
+
+% Sums the 2x upsampled prediction from conv7 (using a transposed convolution with stride 2) with pool4 and then produces the segmentation map, by using a transposed convolution layer with stride 16 on top of that.
+    
+    
+\item \ac{fcn}-8: The summed feature map of conv7 (2x) and pool4 is upsampled using the transposed convolution of stride 2 and added to pool3 feature map. This summed feature map is upsampled using transposed convolution with stride 8 to produce segmentation map. 
+
+
+% Sums the 2x upsampled conv7 (with a stride 2 transposed convolution) with pool4, upsamples them with a stride 2 transposed convolution and sums them with pool3, and applies a transposed convolution layer with stride 8 on the resulting feature maps to obtain the segmentation map.
+
+\end{itemize}
+
+
+\subsubsection{Calculating loss}
+
+\paragraph{Pixel-wise cross entropy loss}
+
+This is one of the most generally used loss function for the task of semantic segmentation. It compares each pixel of the class prediction (depth-wise pixel vector) to the one-hot encoded class label. 
+Figure \ref{crossentropy} gives an example of how loss is calculated.
+\par
+Pixel-wise cross-entropy loss can be calculated as: 
+
+% The most commonly used loss function for the task of image segmentation is a pixel-wise cross entropy loss. This loss examines each pixel individually, comparing the class predictions (depth-wise pixel vector) to our one-hot encoded target vector.
+
+\begin{equation}
+    -\Sigma_{classes}\;y_{true}\;log(y_{pred})
+\end{equation}
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Segmentation_images/crossentropy.png}
+    \caption{(Left) Prediction for a selected pixel and (Right) one hot vector of the corresponding pixel}
+    \label{crossentropy}
+\end{figure}
+
+\par Pixel-wise loss is calculated as the log loss and is summed over all classes contained in the dataset. This calculation is averaged after being calculated for all pixels.
+
+\newpage
+
+\subsection{Object Detection} \label{OD}
+
+Section \ref{Object Detection} gives an understanding of the approaches of object detection and how one stage object detector works. \ac{ssd} \cite{liu2016ssd} is used for object detection in this work. \ac{ssd} is a one stage detector that learns to map classification and regression problem directly from the raw image to bounding box coordinates in a single global step, hence the name 'single shot'. Figure \ref{SSD_Architecture} shows the \ac{ssd} architecture
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Architectures/ssd.jpeg}
+    \caption{Architecture of \ac{ssd}}
+    \label{SSD_Architecture}
+\end{figure}
+
+\ac{ssd} network is composed of six major parts that play an important role in detection objects; they are: 
+
+\begin{itemize}
+    \item Feature extractor
+    \item Convolutional box predictor
+    \item Anchors generation
+    \item Matching priors to actual bounding box coordinates
+    \item Hard negative mining
+    \item Non-maximum suppression as a post-processing step.
+\end{itemize}
+
+\paragraph{Feature extractor}
+
+\ac{ssd} is based on \ac{vgg}16 which works as a feature extractor. 
+
+\paragraph{Convolutional box predictor}
+
+For object detection, last fully connected layers of \ac{vgg}16 are discarded, and a set of auxiliary convolution layers are added which are called as convolutional box predictor. These layers are responsible in producing multiple feature maps of shape $19\times19$, $10\times10$, $5\times5$, $3\times3$ and $1\times1$ in successive order stacked after the feature map coming from last convolutional layer from \ac{vgg}16 of size $38\times38$. These six auxiliary layers extract features from the image at multiple scales and progressively decrease the spatial resolution. Due to performing convolution operation at multiple scales, objects of various sizes can be detected. For example, feature maps of $10\times10$ perform better in detecting smaller objects while feature maps of size $3\times3$ perform better in detecting large objects. Each of these layers is connected to two heads, one that performs regression to find the bounding boxes and the other one to a classifier to classify each of the detected boxes.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Architectures/boxpredictor.png}
+    \caption{Auxiliary box predictor layers \cite{AI-Dairy}}
+    \label{Auxiliary}
+\end{figure}
+
+\paragraph{Anchors generation}
+
+Anchors generation is one of the most critical steps that can significantly affect the overall performance of the model. Anchors are a set of pre-defined boxes overlayed on the input as well as the generated feature maps at different spatial locations, scales and aspect ratios that act as reference points for the model to predict ground truth boxes. Anchors are significant because they provide a strong starting point for the regressor to predict ground truth boxes rather than starting to predict with random co-ordinates. Each feature map is divided into several grids, and each grid is associated with a set of default anchor bounding boxes of different dimensions and aspect ratios. Each of the priors is responsible for predicting exactly one bounding box.  
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Obj_det_images/anchors.png}
+    \caption{Anchors overlayed on $5\times5$ map \cite{AI-Dairy}}
+    \label{Anchors}
+\end{figure}
+
+Figure \ref{Anchors} shows each grid of a $5\times5$ feature map having 6 anchors which mostly matches the objects that need to be detected. For example, the red coloured anchors are most likely to detect the car, whereas blur coloured anchors are likely to detect the person and car of both smaller and larger sizes. 
+
+
+\paragraph{Matching priors to actual bounding box co-ordinates}
+
+Each ground truth bounding box coordinates is matched to anchors having the largest Intersection over Union (IoU) or Jaccard index. Also, unassigned anchors having IoU greater than a threshold (usually 0.5) are also matched to the ground truth boxes. All matched anchors are called positive samples, and the rest are considered as negative samples. 
+
+\paragraph{Hard negative mining}
+
+Among a large number of anchors, only a few will be considered as positive samples, and the rest of the anchors will be considered as negative samples. Hence, from a training point of view, this imbalance between the positive and negative samples will make the training biased towards negatives. To avoid such a situation, some of the negative samples are randomly sampled from the negative pool such that the training set has a negative to positive ratio as 3:1. This process is known as hard negative mining. This reason to keep the negative samples is to let the network know about the features that lead to incorrect detection. 
+
+\paragraph{Non-maximum suppression}
+
+As explained in section \ref{Object Detection}, non-maximum suppression is used to attain top predictions for each class. This makes certain that only the most probable predictions are kept by the model, while the noisy ones are discarded. 
+\par
+
+As \ac{ssd} is a single-shot object detector, all of these components are trained simultaneously. 
+
+\subsubsection{Calculating loss}
+
+The overall loss function is a weighted sum of localization loss (loc) and the confidence loss (conf) where localization loss is the mismatch between ground truth box and predicted bounding box. Confidence loss is the loss in assigning class labels to the predicted bounding boxes. The equation of the loss function is given as: 
+
+\begin{equation}
+    L(x,c,l,g) = \frac{1}{N} (L_{conf} (x,c) + \alpha L_{loc} (x,l,g))
+\end{equation}
+
+Here x = 1 if the anchor matches the determined ground truth box, and 0 otherwise. N is the number of matched anchors, l is predicted bounding box, g is ground truth box, c is class, $L_{conf}$ and $L_{loc}$ are confidence and localization loss. $\alpha$ is the weight for localization loss. Smooth-L1 loss \cite{Girshick_2015_ICCV} is used for localization on \textit{l} and \textit{g}, softmax loss is used for optimization of confidence loss over multiple class confidence \textsc{c}
+
+\subsubsection{L2 regularization}
+
+This is a method used to reduce model complexity and overfitting on training data. During the phase of training, a handful of weights can get too large and thus influence the prediction heavily by suppressing the rest of the weights. This makes the model lose the power to generalize and in turn, overfit on training data. Hence, this method penalizes such large weights and makes sure the model learns smaller and consistent weights, through-out all the layers. 
+
+\begin{equation}
+    L = \frac{1}{N} \sum_{i=1}^{N} L_{i} + \lambda  \sum_{i} \sum_{j} W_{i,j}^2
+\end{equation}
+
+Here, N is the number of classes in the dataset, $L_{i}$ is a loss for particular class \textit{i}. 
+$W_{i,j}^2$ is the regularization function that calculates the sum of squares of each weight from the weight matrix W and $\lambda$ is the regularization parameter which specifies the strength of regularization.
+
+
+\subsubsection{Batch Normalization}
+
+Batch normalization \cite{ioffe2015batch} is also a regularization technique that accelerates the model training by allowing it to use higher learning-rates. During the training phase, a large dataset is passed as batches to the model. The distribution of the batches usually differ from each other, and this affects the behaviour of the model. This change is distribution is known as covariate shift. Due to covariate shift, layer activations change quickly to adapt to changing inputs. As activations of the previous layer are passed as output to the next layer, all layers of the model get affected inconsistently for each batch. This results in a long time for the model to converge. To avert this, activations of each layer are normalized to have zero mean and unit variance. This helps each layer to learn the more stable distribution of inputs in all batches, which speeds up the model training. However, forcing activations to be fixed can limit the representation of input data. Instead, batch normalization allows the model to learn parameters $\beta$ and $\gamma$ during the training phase to convert the mean and variance according to the input data. 
+
+\begin{equation}
+    y^(k) = \gamma^{(k)} \hat x^{(k)} + \beta^{(k)}
+\end{equation}
+
+$\hat x^{(k)}$ is a single activation and $\gamma^{(k)}$, $\beta^{(k)}$ are parameters that scale and shift the normalized value during training. 
+
+\clearpage
+
+
+\subsection{Combining architectures} \label{Combination}
+\vfill
+\begin{figure}[H]
+   \centering
+    \includegraphics[width= \linewidth]{Architectures/encoder1.png}
+    \caption{Combined architecture}
+    \label{combination}
+\end{figure} 
+\vfill
+\clearpage
+
+\subsubsection{Combined architecture} \label{combinearchi}
+
+Sections \ref{SS} and \ref{OD} give an understanding on how semantic segmentation and object detection work separately. Figure \ref{Combination} shows how both the architectures can be combined using a common feature extractor/ encoder. The combined architecture uses \ac{vgg}16 as the common encoder and transfers the image features to both the branches of the architecture. 'Branch1' is the \ac{ssd} network that performs object detection and 'Branch2' is the \ac{fcn} network that performs semantic segmentation. 
+\par
+'Branch1' consists of six auxiliary convolutional layers responsible for producing feature maps of shape $19\times19$, $10\times10$, $5\times5$, $3\times3$ and $1\times1$ in succession stacked after the last feature map produced by \ac{vgg}16 encoder. These layers further extract image features from the image at multiple scales such that objects of different sizes can be detected. For example, feature maps of $3\times3$ are useful to detect big sized objects. Each of these layers is connected to a regressor and a classifier. Regressor predicts the bounding boxes for objects present in the image. Anchors play an important role for the regressors to work. Anchors are a set of pre-defined boxes that are overlayed on the input and the feature maps at different locations, scales and aspect ratios. They provide a starting point for the regressor to predict ground-truth boxes.  Once the bounding boxes are predicted, the classifier predicts the class of the object contained in the predicted bounding box. Lastly, non-maximum suppression is applied to keep top predictions and remove the noisy ones. 
+
+\par
+'Branch2' consists of transposed convolutional layers responsible for producing segmentation maps from the last feature map of \ac{vgg}16 encoder. These transposed convolutional layers upsample the feature maps to the original size as the input. Upsampling can be done in 3 ways: 
+There are 3 ways to upsample the feature map. One way is to upsample the feature map directly by applying the transposed convolution to produce the segmentation map. The other two techniques involve skipping connections to merge features from different resolution levels and applying transposed convolution to produce a segmentation map.   
+
+
+\paragraph{Combined loss} \label{combineloss}
+
+Once both the architectures are combined, the respective losses also need to be combined such that the network can learn both detection and segmentation parallelly. 'Branch1' consists of two losses, localization loss and confidence loss. Localization loss measures the mismatch between ground truth bounding box coordinates and predicted bounding box coordinates. Confidence loss measures the mismatch between ground truth class labels and predicted class labels inside the predicted bounding box. Similarly, 'Branch2' consists of pixel-wise cross-entropy loss. This loss calculates the difference between the predicted vector and one hot encoded class label. The combined loss for our architecture is given as: 
+
+\begin{equation}
+    L = \frac{1}{N} (L_{conf} (x,c) + \alpha L_{loc} (x,l,g)) + (-\Sigma_{classes}\;y_{true}\;log(y_{pred}))
+\end{equation}
+
+The left part of the loss calculates the localization and confidence loss used for object detection while the right side calculates the pixel-wise loss, which is used for semantic segmentation.  
+\par
+
+N is the number of correctly matched anchors with the ground truth bounding box. Value of x=1 if the anchor matches with the ground truth bounding box and 0 if it doesn't match. l is the predicted bounding box while g is the ground truth bounding box. $y_{true}$ is the actual ground truth of semantic segmentation and $y_{pred}$ is the prediction from the model.
+
+\clearpage
+
+
+
+\afterpage{\null\newpage}
+
+

@@ -1,0 +1,18 @@
+\rhead{\textit{Discussion and summary}}
+\lhead{\thepage}
+
+\chapter{Discussion and summary}
+
+We propose an approach to join object detection and semantic segmentation architecture using a common encoder in this work. \cite{liu2016ssd} is used for object detection in our work. It is a one-stage detector that skips the region proposal step and runs detection directly. It consists of six auxiliary layers of different scales that help it detecting objects of different size. All of these layers are connected to two different heads. One of the head does the classification part, and the other head does the regression part. Also, anchors are overlayed at every grid of the feature map or the image. These anchors provide a starting point for the regressor to predict bounding boxes.
+\par
+For semantic segmentation we use \cite{long2015fully}. This architecture is based on fully convolutional networks that consist of only convolutional layer and max-pooling layers. It is based on an encoder-decoder architecture. The encoder does the feature extraction part of the images by reducing the spatial resolution of the image, and the decoder does the upsampling of the feature map to regain the same size as the image.
+\par
+Both the above-mentioned architectures use an encoder to extract image features, and these features are used for object detection as well as semantic segmentation. Using this encoder, we combined both the architectures such that the last feature map is shared between both the architectures. 
+A pre-trained \ac{vgg}16 encoder is used to extract features for the combined architecture. 
+\par
+In order to train the combined architecture, the losses of object detection and semantic segmentation have to be combined. Hence, localization and confidence loss of object detection is combined with the pixel-wise cross-entropy loss of semantic segmentation. 
+\par
+Several experiments are done to understand the flaws or benefits of using a combined architecture as compared to stand-alone architecture. 
+\clearpage
+\pagestyle{plain}
+\afterpage{\null\newpage}

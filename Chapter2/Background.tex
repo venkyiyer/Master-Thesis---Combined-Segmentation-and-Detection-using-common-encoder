@@ -1,0 +1,800 @@
+\rhead{\textit{Background}}
+\lhead{\thepage}
+
+\chapter{Background}
+
+This chapter covers topics which will help, in understanding the approach and methodology that are used, in this work. Section \ref{Machine Learning} gives an explanation of machine learning in the area of \ac{ai} and how different learning techniques in machine learning are applied. Subsequently, section \ref{Neural Networks} gives an explanation about how the transition from a biological neuron to the state-of-art \ac{cnn}, occurs. Sections \ref{Semantic Segmentation} and \ref{Object Detection} are about computer vision problems, namely, semantic segmentation and object detection, upon which this work is mainly based.
+
+% Section \ref{Learning Techniques} is about how different learning techniques in machine learning are applied. Section  is about how the transition from a biological neuron to the state-of-art Convolution Neural Networks (CNN), occurs. Section \ref{Semantic Segmentation} and \ref{Object Detection} are about computer vision problems, namely, semantic segmentation and Object detection, upon which this work is mainly based. 
+
+\subsection{Machine learning} \label{Machine Learning}
+
+Machine learning is the field of \ac{ai} that provides systems, the ability to learn automatically without being programmed to do so. It allows machines to learn through observations of data or, instructions to look for some specific pattern in data. Also, learning involves the machines rectifying itself using past learning experiences, such that it can make better decisions in the future. Hence, the practice of machine learning has become widespread in many fields where profitable opportunities and dangerous risks can be recognized without any human intervention or assistance.
+
+\par
+ 
+The \textit{'learning'} can be categorized into 4 types: 
+
+
+\begin{itemize}
+    \item Supervised learning
+    \item Unsupervised learning
+    \item Semi-supervised learning
+    \item Reinforcement learning
+\end{itemize}
+
+\subsection{Types of learning} \label{Learning Techniques}
+% \paragraph{Types of learning} \label{Learning Techniques}
+
+\subsubsection{Supervised learning}
+
+Supervised learning algorithms are designed to learn by examples. The name \textit{'supervised'} implies an algorithm, that learns under the supervision of a teacher. To make a supervised algorithm learn, data (training data) is provided in the form of input and correct output pairs.
+During the training, the algorithm learns a mapping function that searches for patterns and structures in the inputs that, can be co-related with the desired outputs. The ultimate goal for an trained model is to predict the correct label or class for unseen data (test data) based on the training data. 
+
+% The goal of a supervised learning model is to predict the correct label for unseen data. So, after the training, an algorithm will be given new unseen data, to determine which labels the new inputs will be classified into, based on the training data.
+
+\par
+
+Supervised learning algorithm is  given as:
+
+\begin{equation}
+    Y = f(X)
+\end{equation}
+
+Provided an input \textit{X}, the mapping function assigns a label to it and gives the output (prediction) \textit{Y}
+% Here \textit{Y} is the predicted output determined by a mapping function \textit{f} that assigns a label to input \textit{X}.  
+
+\par
+
+Supervised learning algorithms can be further categorized into two approaches: 
+
+
+\begin{itemize}
+  \item \textbf{Classification}: Classification is the problem of identifying the label for new unseen input sample based on the training data. 
+ 
+  \par
+ 
+     Classification problem can further be categorized into two problems:
+ 
+  \begin{enumerate}
+      \item Binary classification: It is the task of classifying an input sample into two given class/labels.
+      \newline
+      For example - Will it rain today or not? Is this cat or not?
+      \item Multi-class classification: The input samples are classified into three or more classes/ labels.  
+      \newline
+      For example - Is this cat, dog or a lion? Is this mail spam, important or promotional?
+  \end{enumerate}
+ 
+ \item \textbf{Regression}: A regression model attempts to predict a continuous output variable. In this case, the output \textit{Y} would be a real value that ranges from $-\infty$ to $+\infty.$ 
+  \newline
+  For example - What is the value of a stock? Price of a house in Kaiserslautern?  
+\end{itemize}
+
+\par
+
+Some common algorithms used in supervised learning are:
+
+\begin{itemize}
+    \item Linear regression for regression problems
+    \item Random forest for regression problems
+    \item Support vector machine for classification
+    problems
+    \item K-Nearest neighbour for classification problems
+\end{itemize}
+
+For the sake of completeness, sections \ref{Unsupervised learning}, \ref{Semi supervised learning} and \ref{Reinforcement learning} cover the remaining learning techniques in machine learning. These learning techniques are not in the scope of this work; hence, only a shallow understanding is required. 
+
+\subsubsection{Unsupervised learning} \label{Unsupervised learning}
+
+
+In this type of learning, training data consists of only inputs \textit{X} and no correct output \textit{Y}. It is for the algorithm to learn the function \textit{f} to describe the hidden structure from the given data.
+
+\par 
+
+Some common algorithms used in this type of learning are: 
+\begin{itemize}
+    \item Clustering
+    \item Principal Component Analysis(PCA)
+    \item Singular Value Decomposition(SVD)
+\end{itemize}
+
+\subsubsection{Semi-supervised learning} \label{Semi supervised learning}
+
+Semi-supervised learning includes a large amount of inputs \textit{X}, wherein only a part of the data, has output \textit{Y}. This type of learning is described as the hybridization of supervised and unsupervised learning types. 
+
+\par
+
+Some common algorithms used in this type of learning are: 
+\begin{itemize}
+    \item Generative models
+    \item Transductive algorithms
+    \item  Graph-based algorithms
+\end{itemize}
+
+\subsubsection{Reinforcement learning}\label{Reinforcement learning}
+
+Reinforcement learning is about action and the reward associated with that action. This type of learning is employed in various machines to, find the best possible reaction to a specific situation. The machines or the agents, learn from their own experience, unlike supervised learning, where the models are trained with the correct data. 
+ 
+
+\par
+
+Some common algorithms used in this type of learning are: 
+
+\begin{itemize}
+        \item Q-Learning
+        \item State-Action-Reward-State-Action(SARSA)
+        \item Deep Q Network(DQN)
+\end{itemize}
+
+
+From the above section, it can be stated that \ac{ml} is a set of algorithms that analyses the data and learns from the analyzed data to discover patterns. In the same way, a neural network is also a set of algorithms used in machine learning to learn from data and discover patterns in it using graphs of neurons. This work is mainly based on neural networks, so,  we shift our focus towards it. 
+
+\subsection{Neural network} \label{Neural Networks}
+
+\subsubsection{From Biology to Artificial Intelligence}
+
+The human brain is made up of 86 billion cells called neurons. Each neuron is made up of a cell body connected with many dendrites and a single axon. Dendrites receive information from other neurons and pass it to the cell body, while an axon, sends the information from the cell body to other neurons. Axons are connected to synapses, which are connected to dendrites. A neuron receives electrical inputs at the dendrite, and if the sum of these inputs is sufficient enough to activate the neuron, it transmits an electrical signal along the axon and passes this signal to other neurons. A neuron in the brain looks like figure \ref{biological_neuron}.  
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{neurons_images/neu.jpg}
+    \caption{Biological neuron \cite{cs231}}
+    \label{biological_neuron}
+\end{figure}
+
+\newpage
+
+While there has been lots of progress in the area of Artificial Intelligence and machine learning in recent years, the groundwork for everything had been laid out more than 60 years ago. An artificial neuron was developed by Neurophysiologist Warren McCulloch and mathematician Walter Pitts using electrical circuits in the year 1943. Taking inspiration from the human brain and \cite{mcculloch1943logical}, in the year 1958, \cite{rosenblatt1960perceptron} introduced artificial neuron named perceptron. A biological neuron that is mathematically modelled is known as a perceptron.
+
+\par
+
+In a biological neuron, axons from a neuron transmit electrical signals to dendrites of other neurons. In the same way, in perceptron, these electrical signals are represented in the form of numerical values. Between the dendrites and axons, the synapses which modulate these signals by various amounts, exist. Similarly, in perceptron, each input signal is multiplied by a value called weight. If this value exceeds a certain threshold, only then, an actual neuron fires an electrical signal. Similarly, in a perceptron, the weights are calculated with the input signal and then it applies an activation function on the weighted sum $(w_1 \times x_1 + w_2 \times x_2+...w_n \times x_n)$ to calculate the output. This output signal is then, fed to other perceptrons. A single perceptron looks like figure \ref{Perceptron}.  
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{neurons_images/artificial.png}
+    \caption{Artificial neuron: Perceptrons \cite{Perceptrons}}
+    \label{Perceptron}
+\end{figure}
+
+\par
+
+The idea behind the neural network is to simulate lots of interconnected brain cells inside a system to make it learn things, recognize structures and make judgement, the way humans do it. Hence, with the same biological motivation behind neurons in the brain, perceptrons that are stacked in several layers form an artificial neural network. In an artificial neural network, the neurons are organized into three layers, namely input, hidden and output. The input layer brings the data into a model and is passed on to the subsequent layers. The hidden layer is between the input and output layer where the neurons take in a set of weighted inputs, apply the activation function (shown in figure \ref{Perceptron}) to the sum and pass on the output to the output layer. 
+
+\subsubsection{Activation functions} \label{activation_functions}
+
+The activation function operates as a mathematical gate in between the input for the current neuron and its output going to the next neuron. It can be as a function that turns the neuron's output on and off, depending on the threshold. Or it can be a mapping function that maps the input signals into output signals such that the neural network can perfrom action. 
+
+
+\par
+
+As the activation function is attached to each neuron in every layer, it is desired that the function be computationally efficient. Additionally, the function needs to be differential for training the neural network (covered in section \ref{learning in neural network}) 
+
+There are 3 types of activation functions:
+
+\begin{itemize}
+    \item Binary activation function
+    \item Linear activation function
+    \item Non-linear activation function
+\end{itemize}
+
+\paragraph{Binary activation function}
+
+This is a threshold-based activation function. A neuron is only activated if the input value reaches a certain threshold. Once it reaches this threshold, it sends the same signal to the next layer of neurons. 
+
+
+\par
+Problem:
+\begin{enumerate}
+    \item This activation function does not support the classification of multiple inputs. Hence, it is a binary decision-maker, i.e. 'yes' or 'no.'
+\end{enumerate}
+
+
+\paragraph{Linear activation function}
+
+In this activation function, each input is multiplied by the weights for each neuron, and it creates an output signal that is equivalent to the given input.
+
+\newpage
+Problems: 
+\begin{enumerate}
+    \item The derivative of this activation function always remains a constant and has no relation to the input. Hence, it's not possible to go back and adjust the weights across all the layers through which we can attain better prediction. 
+    \item With linear activation functions, it does not matter how many layers we have in the neural network because the last layer would also be a linear function of the first layer(linear aggregate of linear functions is still a linear function). Hence, all the layers just turn into a single-layered neural network that has limited power and the ability to handle complex input data.
+\end{enumerate}
+
+\paragraph{Non-linear activation function}
+
+Most of the modern neural networks use non-linear activation functions. Non-linear activation functions are responsible for the model to create complex mappings between the input and the output. Such kind of functions are essential for modelling complex data such as images, videos, and audios which are high dimensional.
+
+\par
+Advantages over the above mentioned activation functions:
+\begin{enumerate}
+   \item Differential: Methods like gradient descent depend on continuously differentiable functions for finding an optimal minimum. If the functions are not differential, it brings uncertainty in the direction and magnitude of updates to be made in the weights.
+    \item  Monotonic: A monotonic function, guarantees convexity in the loss or cost function that the model tries to minimize. 
+    \item Multiple layered neural networks: Expands the possibility of making a neural network multi-layered or deep such that it can learn complex data and perform well.
+    \item Approximately behaves as an identity function: Using non-linear activation functions, the neural network gets the ability to learn efficiently when its weights are randomly initialized otherwise we need to initialize the weights for the neural network in a different manner.
+    \item Non-linearity: Non-linearity ensures that the output cannot be reconstructed from a linear combination of inputs. In the absence of non-linearity, it is possible to replicate the entire network with just one linear combination of inputs. Also, non-linearity is required such that the model can learn a complex function that can map an input to output 
+\end{enumerate}
+
+Some of the most used non-linear activation functions are:
+
+\begin{itemize}
+    \item Sigmoid: \begin{itemize}
+        \item Maps the output in the range of [0,1]
+        \item The Sigmoid activation function gives rise to the vanishing gradient problem as the larger output contributes to lesser gradients due to which the learning of the model slows down. 
+        \item Sigmoid activation function is given as :
+        $ \sigma(x) = \dfrac{1}{1 + e^{-x}}$
+    \end{itemize} 
+    \newpage
+    \item Tanh: \begin{itemize}
+        \item This activation function squishes the output in the range [-1,1]
+        \item Tanh activation function is given as :
+        $ \sigma(x) = tanh(x)$
+    \end{itemize}
+    \item ReLu: \begin{itemize}
+        \item This activation function does not allow any negative output components to be propagated; only the positive outputs are allowed. 
+        \item It stills maintains a non-linear shape but its not a completely continuous function.
+        \item ReLu activation function is given as :
+        $\sigma(x) = max(0,x)$
+    \end{itemize}
+    \item Softmax: 
+    \begin{itemize}
+        \item A softmax activation function is used as the output function of the last layer in neural networks. It turns the score of the last layer into values that can be understood by humans.
+         \item This function is the same as the argmax function, which returns the position of the largest value from the score vector. This value is interpreted as a probability of the class. 
+        \item Softmax activation function is given as: 
+        $s (x_i) = \frac{e^{x_i}}{ \sum\nolimits_{j=1}^{n}e^{x_j}}$; 
+        $x_1...x_n$ are numbers
+    \end{itemize}  
+    
+    
+\end{itemize}
+
+\begin{figure}[h!]
+
+\begin{multicols}{2}
+    \includegraphics[width=7.5cm]{Activation_functions/Sigmoid.png}\par \includegraphics[width=7.5cm]{Activation_functions/tanh.png}\par
+    \end{multicols}
+\begin{center}
+\includegraphics[width=7.5cm]{Activation_functions/Relu.png}\par
+    
+\end{center}
+\caption{Graphical representation of Sigmoid, Tanh and ReLu functions. 
+\cite{locv}}
+\label{nl_activations}
+\end{figure}
+
+
+\subsubsection{Error and loss function}
+
+Error is the variation between the actual output and predicted output from the network (output layer). The function that calculates the error is known as the loss function. In simple terms, loss function evaluates the performance of a learning algorithm. Different problems use different loss functions and each of these loss functions give different errors for prediction. Hence, loss functions have a considerable effect on the performance of the model.
+
+\par
+
+Different loss functions are used for different types of problems. Some of the commonly used loss functions are: 
+
+\begin{itemize}
+    
+    \item Mean Squared Error (MSE): It is one of the most basic loss functions. This error function calculates the loss by measuring the difference between prediction and actual output, squares it and averages it across the whole data set.
+    \newline Equation can be given as:
+    \begin{equation}
+        \dfrac{1}{n}\sum_{i=1}^{n}(prediction - actual output)^2
+    \end{equation}
+    \par n is the total size of data set
+
+    \item Likelihood loss: This loss is mostly used in classification problems. If a model outputs probabilities of [0.1,0.2,0.3,0.4] for the actual output of [1,0,0,1], the likelihood loss would be calculated as $(0.1)\times(0.1)\times(0.4)\times(0.4)= 0.0016$. The loss function only considers the output probabilities where ground truth label is 1 (correctly classified) and for 0 (incorrect classification) $(1-p)$ is taken as probability.
+
+\end{itemize}
+
+\subsubsection{Optimization}
+
+Once the loss is calculated using the loss function, the next step is to reduce the loss such that, the difference between actual output and the prediction decreases. To reduce the loss, we need to find a set of optimal weights for the model. Gradient descent optimization algorithm is used to minimize the loss function and reach the minimum of the function by moving in the direction of steepest descent. The partial derivative of the cost function is calculated with respect to each parameter such that the new gradient gives the slope of the loss function and the direction in which, we need to move to reduce the loss and improve the output of the model. While doing this, we are also updating the weights of our model. 
+ 
+\par
+
+The learning rate determines the size of the steps needed to reach the minimum of the function. If the learning rate is too high, it may require a lesser number of steps to reach the minimum; however, there is also a chance of passing over the lowest point of the function. A low learning rate is highly time-consuming, but, it is more precise, and hence, the required minimum is achieved. 
+
+
+\subsubsection{Training neural network} \label{learning in neural network}
+
+Gradient descent optimization algorithm is iterative; hence it runs over the entire dataset many times. This iteration is known as an epoch. One epoch means, the entire dataset is iterated over the whole model. Each epoch consists of a forward pass and backpropagation. The loss is calculated with the forward pass, and weights are updated during backpropagation.  
+
+
+\begin{itemize}
+    
+    \item During forward pass, the network initializes some random weights for all neurons, for example, some random values.
+    
+    \item  Output from the forward pass (predicted output) is compared to the actual output (ground truth), and the error is calculated. 
+    
+    \item The error is backpropagated through all the previous layers. The gradients of weights and related activation function are calculated. 
+    
+    \item The gradient is calculated using the chain rule. The derivative of the error is calculated with respect to the parameters (weights and activation function)
+    
+    \item  With calculated gradient, parameters are updated as follows:
+    \begin{equation}
+        \theta =  \theta -  \alpha \frac {d}{d \theta}J( \theta)
+    \end{equation}
+    $\alpha$ is learning rate, $\theta$ is parameters and J is the loss function. 
+\end{itemize}
+
+
+\subsection{Convolution Neural Network}
+
+As discussed in the above sections, the neural network or multi-layered network of neurons can learn the relation between the input and output using non-linear mapping function. But in the case of images, a neural network would, for a given task, take into account the entire image. This, in turn, makes the neural network highly inefficient in terms of pragmatic quality as well as neural network quality, as, the number of parameters to learn increases. Hence, to solve this problem, another type of neural network called Convolution Neural Network (\ac{cnn}) is used,which is specifically designed for computer vision-related tasks such as image classification, semantic segmentation, object detection, etc.  
+
+\par
+
+The inception of \ac{cnn} happened in the year 1960 by D.H Hubel and T.N Wiesel in their paper \cite{hubel1962receptive} where they described two types of cells in the human brain (specifically in the visual cortex), simple cells, and complex cells. Simple cells are activated when they identify basic shapes in a fixed area and a definite angle. The complex cells have bigger receptive fields, and their output is not sensitive to specific positions in the field. Taking inspiration from \cite{hubel1962receptive}, in the year 1998, \ac{cnn} was re-introduced in the paper \cite{lecun1998gradient} called LeNet-5 which was able to classify digits from hand-written numbers. Since it's inception to the present era, the \ac{cnn} has been used in various state of the art applications, especially in the field of computer vision.
+
+\subsubsection{Components of CNN}
+
+There are four main operations in \ac{cnn}. These operations are the essential building blocks in every \ac{cnn}.
+
+\begin{itemize}
+    \item Convolution operation
+    \item Non-linearity
+    \item Pooling step
+    \item Fully connected layer
+\end{itemize}
+
+\subsubsection{Convolution operation}
+
+The name convolution is a mathematical operation computed on two different functions \textit{x} and \textit{y} which produces a third function expressing how the shape of one is modified by the other. The primary goal of convolution is to extract different features from the input.
+
+\begin{figure}[h!]
+    \centering
+        \includegraphics[width=\linewidth]{Convolution/convolution.png}
+    \caption{A conolution operation \cite{VoPa}}
+    \label{convolution}
+\end{figure}
+
+\par
+
+Consider the above example, where there is an image (x) of \textit{7$\times$7} and a kernel or filter (y) of \textit{3$\times$3}. Slide the filter over the image pixel-by-pixel and for every position and compute the element-wise multiplication between the two matrices and then, add the outputs to get a final integer which forms a single element in the output matrix. The output matrix is called an activation map or feature map. Hence, a \ac{cnn} investigates only a piece of the image rather than the entire image at once; making it different from other neural networks. Figure \ref{convolution} shows how the convolution works. 
+
+\par
+
+A convolution neural network learns the values (weights) of the filters on its own during the training process (gradient descent). We can have multiple numbers of filters such that more features from the image get extracted, and better the network becomes in observing and recognizing patterns. 
+
+The size of the feature map can be controlled by three parameters, they are:
+
+\begin{itemize}
+    \item Depth - Depth - Depth is the number of filters we use for the convolution operation. For example, if we use three distinct filters on the input image, we will have three feature maps that are stacked together. 
+    
+    \item  Stride - It determines the number of pixels by which the filter slides over the input matrix. For example, if the stride value is 1, we move the filter over the input by one pixel at a time. If the stride value is 3, we move the filter over the input by jumping 3 pixels at a time.
+    
+    \item Zero-padding - We pad the input matrix with zeros around the border such that filter can be applied to the bordering elements of the input matrix. Applying zero-padding is called as wide-convolution and not using zero-padding is called as narrow-convolution.
+    
+\end{itemize}
+
+\subsubsection{Non-linearity}
+
+As explained in the section \ref{activation_functions}, non-linear activation functions are responsible for the model to create complex mappings between the input and the output such that modelling complex data such as images, videos, audios, which are, high dimensional in nature is possible.
+
+\subsubsection{Pooling step}
+
+Pooling step is done to reduce the dimensionality of the feature map and preserve the most important features from the map. This process is also called as downsampling of upsampling.
+
+There are three types of pooling: 
+
+\begin{itemize}
+    \item Max pooling - Define a spatial neighbourhood $2\times2$ window and take the largest element from each window of the feature map to form a new output matrix. Figure \ref{maxpool} shows how max-pooling works. 
+    
+    \item Average pooling - Define a spatial neighbourhood $2\times2$ window and take the average of all the elements in each window from the feature map, to form a new output matrix with the average values.
+    
+    \item Sum pooling - Define a spatial neighbourhood $2\times2$ window and take the sum of all the elements in the window from the feature map, to form the new output matrix with the sum values.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+        \includegraphics[width=\linewidth]{Convolution/Maxpooling.png}
+    \caption{\cite{VoPa}}
+    \label{maxpool}
+\end{figure}
+
+Pooling has further advantages like:
+
+\begin{itemize}
+    \item It makes the input representations smaller and hence, more manageable.
+    \item It reduces the number of parameters and therefore, controls overfitting.
+    \item It makes the model unvaried to small distortions, translations in the input image.
+    \item It makes an invariant representation of the image due to which, the network can detect objects at any located position in the image. 
+\end{itemize}
+
+\subsubsection{Fully connected layer}
+
+The term 'fully connected' implies that every neuron in the layer is connected with the neurons of the previous layer. The convolutional layers and pooling layers are used to extract features from the input image while, the fully connected layer uses these extracted features to, classify the input image into separate classes based on the training dataset. A softmax function is used as the activation function in order to get the probabilities of each class in the dataset. 
+
+\par
+
+Figure \ref{FCN} shows how all the components are linked to each other in \ac{cnn}. 
+
+\begin{figure}[h!]
+    \centering
+        \includegraphics[width=\linewidth]{Convolution/Fullyconnlayer.png}
+    \caption{\cite{VoPa}}
+    \label{FCN}
+\end{figure}
+
+\subsection{Feature extraction using CNN} \label{feature_extractor}
+
+The previous section gives us an understanding of the components in \ac{cnn}. A \ac{cnn} can be thought of, as a combination of two components where convolution and pooling layers extract features from an image, while, fully connected layers do the classification using the softmax function. A feature is a measurable piece of data in the image specific to some object. It can be a distinct colour or a specific shape like a line, an edge or an image segment. These convolution layers are capable of learning such complex features in an image. The initial layers detect features such as lines and edges. The next layers combine these basic features to detect shapes and the following layers combine these information to identify the object. 
+
+
+\par
+
+Below figure \ref{Feature_extraction} shows how features are extracted from a given image. 
+
+\begin{figure}[h!]
+    \centering
+        \includegraphics[width=7.5cm]{Feature_extract/Feat.png}
+    \caption{\cite{Elgendy}}
+    \label{Feature_extraction}
+\end{figure}
+
+Such feature extractors are trained and fine-tuned on a very large dataset ( for e.g. ImageNet dataset which contains 1.2 million images with 1000 classes). Then, these learned features are directly incorporated into new networks to perform new tasks. This process is known as transfer learning using a pre-trained network. Transfer learning process generally tends to work if the features are suitable to both the base and the new tasks. 
+
+\par
+Some well known feature extractors are: 
+\begin{itemize}
+    \item VGG16
+    \item ResNet
+    \item DenseNet
+\end{itemize}
+\par
+Some advantages of using transfer learning are listed below: 
+
+\begin{itemize}
+    \item It saves training time in comparison to train an entire CNN from scratch.
+    \item It works when the labelled data is limited.
+\end{itemize}
+
+
+
+
+%  have penned down couple of blog-post to train entire Convolution Network (CNN) model on sufficiently large data-set. You can read posts here and here. In practice, very few people train an entire CNN from scratch because it is relatively rare to have a data-set of sufficient size. Instead, it is common to pre-train a convolution neural network (CNN) on a very large data-set (e.g. ImageNet data-set, which contains 1.2 million images with 1000 categories), and then use the pre-trained model either as an initialization or a fixed feature extractor for the task of interest.
+
+% In transfer learning, we first train a base network on a base data-set and task, and then we transfer the learned features, to a second target network to be trained on a target data-set and task. This process will tend to work if the features are general, that is, suitable to both base and target tasks, instead of being specific to the base task.
+
+
+% A CNN model can be thought as a combination of two components: feature extraction part and the classification part. The convolution + pooling layers perform feature extraction. For example given an image, the convolution layer detects features such as two eyes, long ears, four legs, a short tail and so on. The fully connected layers then act as a classifier on top of these features, and assign a probability for the input image being a dog.
+
+% he convolution layers are the main powerhouse of a CNN model. Automatically detecting meaningful features given only an image and a label is not an easy task. The convolution layers learn such complex features by building on top of each other. The first layers detect edges, the next layers combine them to detect shapes, to following layers merge this information to infer that this is a nose. To be clear, the CNN doesn’t know what a nose is. By seeing a lot of them in images, it learns to detect that as a feature. 
+
+
+% The previous section gives an understanding about the components in CNN. The convolution layers are the main powerhouse of a CNN model. These convolution layers are capable of learning complex features in an image. For example, a feature is a measurable piece of data in your image which is unique to some specific object. It can be a distinct colour or a specific shape such a line, edge or a image segment.
+
+% In transfer learning, we first train a base network on a base data-set and task, and then we transfer the learned features, to a second target network to be trained on a target data-set and task. This process will tend to work if the features are general, that is, suitable to both base and target tasks, instead of being specific to the base task.
+
+% Earlier, I have penned down couple of blog-post to train entire Convolution Network (CNN) model on sufficiently large data-set. You can read posts here and here. In practice, very few people train an entire CNN from scratch because it is relatively rare to have a data-set of sufficient size. Instead, it is common to pre-train a convolution neural network (CNN) on a very large data-set (e.g. ImageNet data-set, which contains 1.2 million images with 1000 categories), and then use the pre-trained model either as an initialization or a fixed feature extractor for the task of interest.
+
+% In order to extract such features using a CNN model, we need to train the network 
+
+% https://freecontent.manning.com/the-computer-vision-pipeline-part-4-feature-extraction/
+
+% https://towardsdatascience.com/applied-deep-learning-part-4-convolutional-neural-networks-584bc134c1e2
+
+% https://towardsdatascience.com/cnn-application-on-structured-data-automated-feature-extraction-8f2cd28d9a7e
+
+
+\subsection{Semantic Segmentation} \label{Semantic Segmentation}
+
+Semantic segmentation is about understanding an image at the pixel level. To be precise, it is the task of classifying each and every pixel in an image from a set of predefined classes. This process is also referred to as pixel-level classification.
+
+\begin{figure}[h!]
+\begin{multicols}{2}
+    \includegraphics[width=\linewidth]{Segmentation_images/0001TP_007020.png}\par \includegraphics[width=\linewidth]{Segmentation_images/0001TP_007020_L.png}\par
+    \end{multicols}
+\caption{Example of semantic segmentation}
+\label{Example_segmentation}
+\end{figure}
+ 
+Applications that use semantic segmentation are: 
+
+\begin{itemize}
+    \item Autonomous vehicles
+    \item Medical diagnostics
+    \item Facial segmentation
+    \item Geo-Sensing
+\end{itemize}
+
+\subsubsection{Representation of the task}
+
+The goal in semantic segmentation is to take an image and output a colour map where each pixel contains a class label represented as an integer (as shown in figure \ref{classlabels}.)
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Segmentation_images/classlabels.png}
+    \caption{Each class represented as integers \cite{JJ}}
+    \label{classlabels}
+\end{figure} 
+
+Every class label is one-hot encoded, and an output channel is created for each of these classes. One hot encoding means a way of representing the data in a binary string where only a single bit can be 1 and rest all the bits are 0. By doing this, we stack all output channels in such a way that 1's show the existence of a particular class.  
+
+Figure \ref{One_hot} shows one hot encoding of figure \ref{classlabels}. 
+
+\begin{figure}[h!]
+    \centering
+        \includegraphics[width=\linewidth]{Segmentation_images/per_class.png}
+    \caption{One hot encoding \cite{JJ}}
+    \label{One_hot}
+\end{figure}
+
+
+\newpage
+
+The prediction is obtained by collapsing all the class maps into a segmentation map by taking the argmax of each depth-wise pixel vector.
+
+\subsubsection{Architecture}
+
+The most naive approach for semantic segmentation architecture is to stack a specific number of convolution layers with the same padding in order to preserve the dimensions of the image and output a final segmentation map. Figure \ref{without_padding} shows the most basic architecture used for semantic segmentation.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Segmentation_images/padding.png}
+    \caption{Preserving spatial resolution \cite{cs231}}
+    \label{without_padding}
+\end{figure}
+
+As the above method is computationally very expensive because of preserving the dimensions throughout, a newer approach of segmentation was developed using the encoder-decoder architecture. Encoder downsamples the spatial resolution of the input image, develops lower resolution feature maps which are highly efficient at discriminating classes. The decoder does the upsampling of the feature maps into a full resolution segmentation map. Figure \ref{with_padding} shows the encoder-decoder architecture. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Segmentation_images/ED.png}
+    \caption{Encoder-Decoder architecture \cite{cs231}}
+    \label{with_padding}
+\end{figure}
+
+Recent architectures that perform semantic segmentation use pre-trained feature extractor as an encoder such that a rich feature representation of the original input image is achieved.     
+
+\paragraph{Methods of upsampling}
+
+The above sections give an understanding as to how an encoder and decoder architecture works in semantic segmentation. The pooling operation downsamples the spatial resolution by summarizing a local area using a single value (e.g. max pooling), while unpooling operations upsample the feature map resolution by distributing a single value to a higher resolution. Some unpooling approaches are listed below: 
+
+\begin{itemize}
+    \item Nearest neighbour: This is one of the most basic approaches to upsample the feature map. 
+    It copies the value from the neighbouring pixel and does upsampling. 
+    
+    \item Max unpooling: This technique works by storing the locations of a maximum element within each pooling window and placing it at the same location while unpooling. Rest of the values contained in the pooling window are zeroed out.
+    
+    \item  Transposed convolution: This is one of the most popular approaches amongst the upsampling techniques. This technique allows learned upsampling. A typical convolution operation does the element-wise dot product of the image and filter's view and produces a single value in the output matrix. While a transpose convolution does the complete opposite, we take a single value from the low-resolution feature map and multiply it with all values in the filter and project the filter values onto the output feature map. Figure \ref{transpose convolution} below gives a 1-D example of how transposed convolution works. 
+    
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Segmentation_images/transpose_conv.png}
+    \caption{1-D transpose convolution \cite{JJ}}
+    \label{transpose convolution}
+\end{figure}
+
+\end{itemize}
+
+\newpage 
+
+\subsubsection{Evaluation metrics}
+
+% https://towardsdatascience.com/metrics-to-evaluate-your-semantic-segmentation-model-6bcb99639aa2
+
+\begin{itemize}
+    
+\item Pixel accuracy: It is the percent of pixels that are correctly classified in the image. If a pixel is correctly predicted to belong to a certain class, it is counted as a true positive sample, whereas true negative represents a pixel that is correctly identified as not belonging to the correct class. Even though this metric is really easy to understand, this metric does not give a proper measure of performance. Class imbalance, means, the dominance of certain class in an image affects this metric the most. 
+
+    \begin{equation}
+        accuracy = \dfrac{TP + TN }{TP + TN + FP + FN}
+    \end{equation}
+    
+\item Intersection-over-Union(IoU): It is one of the most commonly used metrics in semantic segmentation. IoU is the area of overlap divided by the area of union between the predicted segmentation map and the actual output. This metric ranges from 0-1 (0-100\%) where 0 signifies no overlap and 1 signify perfect segmentation map according to the actual output. 
+
+    \begin{equation}
+        IoU = \dfrac{target \cap prediction }{target \cup  prediction}
+    \end{equation}
+
+
+\end{itemize}
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[b]{10cm}
+    \includegraphics[width=\linewidth]{Segmentation_images/GT-Pred.png}
+    \caption{Actual output and prediction sample}
+  \end{subfigure}
+  \begin{subfigure}[b]{10cm}
+    \includegraphics[width=\linewidth]{Segmentation_images/Int-U.png}
+    \caption{Intersection and union between actual output and prediction}
+  \end{subfigure}
+  \caption{\cite{JJ}}
+  \label{fig:mou&pix}
+\end{figure}
+
+
+% \begin{itemize}
+%     \item \textbf{Intersection over union}: This metric is a method to calculate the percentage overlap between the target mask and the model predicted segmented output. This metric measures the number of pixels common between the target and the prediction divided by the total number of pixels present across both the masks.  Iou can also be referred as jaccard index. The equation can be given as: \textit{\[ IoU = \dfrac{target \cap prediction }{target \cup  prediction} \]} Refer fig. \ref{fig:mou&pix}b
+    
+%     \item\textbf{Pixel accuracy}: This alternative metric is used to calculate the percentage of pixels in the image that are correctly classified. If a pixel is correctly predicted to belong to a certain class, it is counted as a true positive sample whereas true negative represents a pixel that is correctly identified as not belonging to the correct class. The equation can be given as: 
+%     \textit{\[ accuracy = \dfrac{TP + TN }{TP + TN + FP + FN} \]}
+    
+% \end{itemize}
+
+
+\newpage 
+\subsection{Object detection} \label{Object Detection}
+
+Object detection is a technique used for finding objects of interest in an image. It is about finding multiple objects, classify them and locate them in the image using a bounding box.  
+
+
+\begin{figure}[h!]
+\begin{multicols}{2}
+    \includegraphics[width=\linewidth]{Obj_det_images/2007_002597.jpg}\par \includegraphics[width=\linewidth]{Obj_det_images/2597.jpg}\par
+    \end{multicols}
+\caption{Example of object detection}
+\label{Example_objectdet}
+\end{figure}
+
+\par
+
+Applications that use object detection are:
+
+\begin{itemize}
+    \item Face detection
+    \item Visual search engine
+    \item Aerial image analysis
+    \item Counting objects
+\end{itemize}
+
+\par
+
+Object detection can be categorized in two different types of approaches:
+
+% where in one approach we make fixed number of predictions on grid while the other approach deals with the proposal network to find the objects contained in an image and use a separate network to fine-tune the proposals and give the final output prediction. A brief description of both the techniques can be given as:
+
+\begin{itemize}
+
+\item{Two-stage object detection}: In this approach, object detection happens in two stages. First, the model proposes a set of a region of interests using a region proposal network. The second part of the model does the classification and bounding box regression over region proposals.
+
+\par
+
+Some well known two-stage detection architectures are:
+
+\begin{itemize}
+    \item R-CNN
+    \item Fast R-CNN
+    \item Faster R-CNN
+\end{itemize}
+
+\item{One stage object detection}: This approach requires only a single pass through the CNN to detect all the objects in an image in one go. Due to this factor, these models are simpler and faster at the performance. 
+
+\end{itemize}
+
+\subsubsection{Direct object prediction using grid}
+
+% To detect the objects in an image, we feed the image through a series of convolution layers to build a rich feature representation of the image. These convolution layers can also be referred as the 'backbone' network, which are usually pre-trained as an image classifiers due to which it becomes cheap to extract features from the image. In order to learn good feature representations, the 'backbone' network should be trained on a very large labeled dataset. Some of the frequently used 'backbone' networks are:
+
+% \begin{itemize}
+%     \item VGG16 \cite{SiZi15}
+%     \item AlexNet \cite{Kri10}
+%     \item Le-Net \cite{Yann98}
+% \end{itemize}
+
+One stage object detectors use pre-trained feature extractor to build a rich feature representation of the original input image. We remove last few layers from the feature extractor such that the output is a collection of stacked feature maps which describe the original input image in low spatial resolution. Consider an example of $7\times7\times512$ representation of the original input image where each of the stacked feature maps describes different characteristics of the image. This $7\times7$ obtained from the feature extractor roughly locates the object in the original input image. This feature map can be represented as a grid responsible for detecting the object as it contains the centre point of coordinates of the bounding box. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Obj_det_images/grid.png}
+    \caption{\cite{JJ1}}
+    \label{Grid}
+\end{figure}
+
+
+
+
+% We remove the last few layers of the 'backbone' architecture such that the architecture outputs a collection of stacked feature maps which describes the original image in a low spatial resolution. The fig. \ref{fig:Feature extractor} shows an example of 7x7x512 representation of the original image where each of the 512 feature maps describe different characteristics of the image.
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=\linewidth]{Object_det_images/feature_maps.png}
+%     \caption{\cite{Jj}}
+%     \label{fig:Feature extractor}
+% \end{figure}
+
+% The 7x7 feature map obtained from the 'backbone' architecture roughly locates the object in the original image. As shown in fig. \ref{Grid} we can assign the particular grid responsible for detecting the object as it contains the center point of the co-ordinates of the bounding box.
+
+% \begin{figure}[h!]
+%     \centering
+%     \includegraphics[width=\linewidth]{Object_det_images/grid.png}
+%     \caption{\cite{Jj}}
+%     \label{Grid}
+% \end{figure}
+
+\newpage
+
+We combine all the feature maps in order to produce an activation corresponding to the particular grid cell containing the object. Considering we might have more that one object per image, we should have multiple activations on specific grid cells. 
+
+\par
+
+However, to fully describe the detected object, we need
+
+\begin{itemize}
+    
+    \item The probability of an object contained in the grid cell \textit{$P_{obj}$}
+    
+    \item Class of the object \textit{($c_{1}, c_{2},...c_{c}$)}
+    
+    \item And the co-ordinates of the bounding box for the object \textit{($x,y,w,h$)}
+    
+\end{itemize}
+
+Hence, as per the requirements, we need to learn a convolution filter for each of the above-mentioned attributes such that it outputs 5 + \textit{C} output channels in order to describe a single bounding box at each grid cell location. The figure \ref{fig:filters} shows us the output on applying 5 + \textit{C} convolution filters. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Obj_det_images/filters.png}
+    \caption{\cite{JJ1}}
+    \label{fig:filters}
+\end{figure}
+
+Considering we might have multiple objects belonging to the same grid cell, we need to alter our layer such that it produces B(5+\textit{C}) filters for B bounding boxes for each grid cell. Hence, our model will produce a fixed number of $N\times N\times B$ predictions for a given image. By setting a threshold for \textit{$P_{obj}$} we can limit our predictions. However, we end up introducing a problem by creating a large imbalance between the predicted bounding boxes containing an object and bounding boxes that do not contain any object.
+  
+
+\subsubsection{Non Maximum Suppression}
+
+In order to resolve the problem of imbalance between predicted bounding boxes containing object and predicted bounding boxes that don't contain any object, we use a filtering technique called Non-Maximum Suppression. We filter out the predictions that are noisy and may not contain any object. Plus, we want just a single bounding box prediction for each object detected. 
+\par
+Hence, we set the \textit{$P_{obj}$} threshold and filter out most of the bounding box predictions that are below the set threshold. However, we might still be left with multiple bounding box predictions describing the same object. Hence, we perform the following steps in order to remove the redundant bounding boxes:
+
+\begin{itemize}
+    \item We need to select the bounding box prediction with the highest confidence score
+    \item Calculate the IoU score between the selected (highest confidence score) and all the remaining predictions
+    \item Remove the prediction boxes which have an IoU score above some defined threshold
+    \item Repeat the above-mentioned steps until no more prediction boxes are remaining to be suppressed. 
+\end{itemize}
+
+Fig. \ref{non-max} shows how an image looks before and after applying Non Maximum Suppression. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{Obj_det_images/nms.png}
+    \caption{\cite{Nms}}
+    \label{non-max}
+\end{figure}
+
+We perform Non-Maximum Suppression on each of the class separately. 
+
+\newpage
+
+
+\subsubsection{Evaluation metrics}
+
+\paragraph{Average precision}
+
+The accuracy of object detection models is measured in terms of classification and localization. The metric used to suit this purpose is the Mean Average Precision (mAP). Average precision is calculated for each class separately under the area of the precision-recall curve. 
+\par
+\begin{itemize}
+    \item Precision: It is the percentage measure of correct predictions by the model.
+    \begin{equation}
+        Precision = \frac{True Positive (TP)}{True Positive (TP) + False Positive (FP)}
+    \end{equation}
+    \item Recall: It is the percentage measure of possible ground-truth bounding boxes being detected. 
+    \begin{equation}
+        Recall = \frac{True Positive (TP)}{True Positive (TP) + False Negative (FN)}
+    \end{equation}
+\end{itemize}
+
+For both precision and recall, True Positive is the measure of predictions that has IoU greater than $0.5$ with ground-truth bounding boxes, while, False Positive (FP) is the measure of predictions with IoU less than $0.5$ with the ground-truth bounding boxes and False Negative (FN) is the number of ground-truth bounding boxes that are not detected by the model. 
+
+\par
+
+The predictions by the model are sorted by the confidence score from highest to lowest. Then, 11 different confidence thresholds (known as ranks) are chosen such that recall at each of those rank values have 11 values ranged from 0 to 1 with 0.1 intervals. These thresholds should be in a way that recalls at those confidence values is $0, 0.1...1.0$. Average precision is now calculated as the average of maximum precision values at those 11 selected recall values. 
+\par
+Average precision for class \textit{c} is defined as: 
+\begin{equation}
+    AP_{c} = \frac{1}{11} \sum_{r\in(0,0.1...1)}^R \max(P(r))
+\end{equation}
+Here $P(r)$ is the precision value for one of the 11 recall values $(r)$
+
+\par
+
+Mean average precision is the average of AP's over all the classes. The mAP is given as:
+\begin{equation}
+    mAP = \frac{1}{C} \sum_{c}^C AP_{c}
+\end{equation}
+
+Here, C is the total number of classes and $AP_{c}$ is the AP for particular class c. 
+\afterpage{\null\newpage}
